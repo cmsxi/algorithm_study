@@ -1,5 +1,5 @@
 def solution(n):
-    # 분할 정복과 동일
+    # 분할 정복, 피보나치 수열 구하는 것과 동일
     case = [1, 1]
     
     for i in range(2, n+1):
