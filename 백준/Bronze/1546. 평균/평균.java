@@ -1,22 +1,22 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        String[] inputArray = br.readLine().split(" ");
-        int max = 0;
+
+        int maxScore = 0;
         double result = 0;
 
+        int n = Integer.parseInt(br.readLine());
+        String[] inputArray = br.readLine().split(" ");
+
         for(String s : inputArray){
-            if (Integer.parseInt(s) > max){
-                max = Integer.parseInt(s);
+            if (Integer.parseInt(s) > maxScore){
+                maxScore = Integer.parseInt(s);
             }
             result += Integer.parseInt(s);
         }
 
-        System.out.println(result/n/max*100);
+        System.out.println(result/n/maxScore*100);
     }
 }
