@@ -2,12 +2,12 @@ import java.util.*;
 
 class Solution {
     public int solution(String[] want, int[] number, String[] discount) {
-        int answer = 0;
+        int answer = 0; 
         HashMap<String, Integer> map = resetMap(want, number);
              
-        int idx = 0;
-        while(9 + idx < discount.length){
-            map = resetMap(want, number);
+        int idx = 0; 
+        while(9 + idx < discount.length){  // 길이 내에서 코드가 실행되도록 
+            map = resetMap(want, number); 
             for(int i = 0; i < 10; i++){
                 if(map.containsKey(discount[i+idx])){
                     if(map.get(discount[i+idx]) == 1){
