@@ -1,126 +1,54 @@
-// import java.util.*;
-
-// class Solution {
-//     public int[] solution(int N, int[] stages) {
-//         int[] answer = new int[N];
-        
-//         // 스테이지별로 몇 명이 방문했는지. visited[k-1]에는 k번째 스테이지에 몇명의 사람이 방문했었는지 나옴
-//         int[] visited = new int[N];
-        
-//         for(int s : stages){
-//             if(s > N) continue;
-//             visited[s-1] += 1;
-//         }
-        
-//         // 해당 스테이지에서의 도전자
-//         int challenger = stages.length;
-        
-//         // 스테이지별 실패율을 저장
-//         ArrayList<double[]> failAndStage = new ArrayList<>();
-        
-//         // 안의 괄호의 0번째는 실패율, 1번째는 스테이지 번호
-//         for(int i = 0; i < N; i++){
-//             double fail;
-            
-//             if(challenger <= 0){
-//                 fail = 0;
-//             } else{
-//                 fail = visited[i] / (double)challenger;
-//                 challenger -=  visited[i];     
-//             }
-            
-//             // 각 실패율과 시테이지 번호를 리스트에 저장
-//             double[] tempFailAndStage = new double[2];
-            
-//             tempFailAndStage[0] = fail;
-//             tempFailAndStage[1] = i+1.0;
-            
-//             failAndStage.add(tempFailAndStage);
-//         }
-        
-//         // 실패율을 기준으로 방문자를 정렬, 내림차순
-//         Collections.sort(failAndStage, new Comparator<double[]>() {
-//            @Override
-//             public int compare(double[] o1, double[] o2){
-//                 if(o2[0] == o1[0]){
-//                     if(o2[1] > o2[1]){
-//                         return -1;
-//                     }
-//                     else{
-//                         return 1;
-//                     }
-//                 } else if (o2[0] > o1[0]){
-//                     return 1;
-//                 } 
-//                 return -1;
-//             }
-//         });
-        
-        
-//         for(int i =0; i < answer.length; i++){
-//             double[] temp = failAndStage.get(i);
-            
-//             // 제대로 저장되었는지 확인
-//             // System.out.println(Arrays.toString(temp));
-//             answer[i] = (int)temp[1];
-//         }
-        
-//         return answer;
-//     }
-// }
-
 import java.util.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
-        int[] answer = new int[N];
-        
-        // 스테이지별로 몇 명이 방문했는지. visited[k-1]에는 k번째 스테이지에 몇명의 사람이 방문했었는지 나옴
-        int[] visited = new int[N];
-        
-        for(int s : stages){
-            if(s > N) continue;
-            visited[s-1] += 1;
-        }
-        
-        // 해당 스테이지에서의 도전자
-        int challenger = stages.length;
-        
-        // 스테이지별 실패율을 저장
-        ArrayList<double[]> failAndStage = new ArrayList<>();
-        
-        // 안의 괄호의 0번째는 실패율, 1번째는 스테이지 번호
-        for(int i = 0; i < N; i++){
-            double fail;
-            
-            if(challenger <= 0){
-                fail = 0;
-            } else {
-                fail = visited[i] / (double)challenger;
-                challenger -= visited[i];     
+        int length = stages.length;
+        int[] arr = new int[N+1]; //index에 stage, 저장된 값에 각 stage가 나온 횟수
+        //각 스테이지에 해당하는 유저가 몇 명인지 저장
+        for(int i=0; i<length; i++){ //인원수만큼 반복
+            if (stages[i] <= N) {
+                arr[stages[i] - 1] += 1; //각 스테이지에 몇 명이 있는지 저장
             }
-            
-            // 각 실패율과 스테이지 번호를 리스트에 저장
-            failAndStage.add(new double[]{fail, i + 1});
         }
+        //각 방의 번호는 1이 아니라 0부터 시작
+        double[] rate = new double[N+1]; //실패율을 저장할 배열
         
-        // 실패율을 기준으로 방문자를 정렬, 내림차순
-        Collections.sort(failAndStage, new Comparator<double[]>() {
-           @Override
+        //[][0] index, [][1] 값
+        //정렬. 실패율로 내림차순 정렬. 만약 같다면 번호 순 오름차순 정렬
+        ArrayList<double[]> list = new ArrayList<>();
+        
+        int total = stages.length;
+        for(int i=0; i<arr.length; i++){
+            if(arr[i] == 0){
+                rate[i] = 0.0;
+            }else{
+                double percent = (double) arr[i] / (double) total;
+                total = total - arr[i]; //그 단계만큼의 인원을 빼기
+                rate[i] = percent;
+            }
+            double[] indexAndRate = new double[2]; //double[0]에 index, double[1]에 rate 저장
+            indexAndRate[0] = i+1; //스테이지 번호는 1부터 시작하기 때문
+            indexAndRate[1] = rate[i];
+            list.add(indexAndRate);
+        }
+
+        Collections.sort(list, new Comparator<double[]>(){ //arraylist안에서의 double형 배열을 가지고만 정렬을 할 것
+            @Override
             public int compare(double[] o1, double[] o2){
-                if(Double.compare(o2[0], o1[0]) == 0){ // 실패율이 같을 때
-                    return Double.compare(o1[1], o2[1]); // 스테이지 번호 오름차순
-                } else {
-                    return Double.compare(o2[0], o1[0]); // 실패율 내림차순
+                if(o1[1] == o2[1]){
+                    return Double.compare(o1[0], o2[0]);
+                }else{
+                    return Double.compare(o2[1], o1[1]);
                 }
             }
         });
         
-        for(int i = 0; i < answer.length; i++){
-            answer[i] = (int) failAndStage.get(i)[1]; // 스테이지 번호 저장
+        //정렬 후 
+        int[] answer = new int[N];
+        for(int i=0; i<N; i++){
+            answer[i] = (int) list.get(i)[0];
         }
         
         return answer;
     }
 }
-
